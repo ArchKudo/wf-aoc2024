@@ -287,61 +287,76 @@ params.data = "data/4.in"
 // Chatgpt somehow fixed the bug in my code, need to revisit
 def bothDiagonals(arr) {
     def row = arr.size()
+
     def col = arr[0].size()
     def forwardDiagonals = []
     def reverseDiagonals = []
 
-    // Compute both forward and reverse diagonals
-    (-(row - 1)..<col).each { diag -> // Index range covers all diagonals
+    // Traverse through each diagonal start
+    // for 10x10 matrix start from -9 to +9 (0-based indexing)
+    (-(row - 1)..<col).each { diag -> 
         def forwardDiagonal = []
         def reverseDiagonal = []
 
-        // Forward diagonal: Top-left to bottom-right
+
         (0..<row).each { r ->
+
             def c = diag + r
+
+            println row + " " + diag + " " + c + " " + r 
             if (c >= 0 && c < col) {
                 forwardDiagonal << arr[r][c]
             }
         }
-        if (!forwardDiagonal.isEmpty()) forwardDiagonals << forwardDiagonal.join("")
+        println forwardDiagonal
+        // if (!forwardDiagonal.isEmpty()) forwardDiagonals << forwardDiagonal.join("")
 
-        // Reverse diagonal: Bottom-left to top-right
-        (0..<row).each { r ->
-            def c = diag + (row - 1 - r)
-            if (c >= 0 && c < col) {
-                reverseDiagonal << arr[r][c]
-            }
-        }
-        if (!reverseDiagonal.isEmpty()) reverseDiagonals << reverseDiagonal.join("")
+        // (0..<row).each { r ->
+        //     def c = diag + (row - 1 - r)
+        //     if (c >= 0 && c < col) {
+        //         reverseDiagonal << arr[r][c]
+        //     }
+        // }
+        // if (!reverseDiagonal.isEmpty()) reverseDiagonals << reverseDiagonal.join("")
+        // println diag
     }
 
-    return forwardDiagonals + reverseDiagonals
+    // return forwardDiagonals + reverseDiagonals
 }
 
+
+
+// workflow {
+//     // Parse input into an array of strings
+//     def arr = file(params.data)
+//                 .readLines()
+//                 .collect { it.split("") } // Convert rows to character arrays
+
+//     // Horizontal matches
+//     def x = arr.collect { it.join("") }
+//                .collect { it.findAll(/(?=(SAMX|XMAS))/).size() } // Use regex with lookahead for overlaps
+//                .sum()
+
+//     // Vertical matches (using transpose)
+//     def transposed = arr.transpose()
+//     def y = transposed.collect { it.join("") }
+//                       .collect { it.findAll(/(?=(SAMX|XMAS))/).size() }
+//                       .sum()
+
+//     // Diagonal matches
+//     def diagonals = bothDiagonals(arr)
+//     def d = diagonals.collect { it.findAll(/(?=(SAMX|XMAS))/).size() }
+//                      .sum()
+
+//     println "Horizontal Matches: $x"
+//     println "Vertical Matches: $y"
+//     println "Diagonal Matches: $d"
+//     println "Total Matches: ${x + y + d}"
+// }
+
 workflow {
-    // Parse input into an array of strings
     def arr = file(params.data)
-                .readLines()
-                .collect { it.split("") } // Convert rows to character arrays
-
-    // Horizontal matches
-    def x = arr.collect { it.join("") }
-               .collect { it.findAll(/(?=(SAMX|XMAS))/).size() } // Use regex with lookahead for overlaps
-               .sum()
-
-    // Vertical matches (using transpose)
-    def transposed = arr.transpose()
-    def y = transposed.collect { it.join("") }
-                      .collect { it.findAll(/(?=(SAMX|XMAS))/).size() }
-                      .sum()
-
-    // Diagonal matches
-    def diagonals = bothDiagonals(arr)
-    def d = diagonals.collect { it.findAll(/(?=(SAMX|XMAS))/).size() }
-                     .sum()
-
-    println "Horizontal Matches: $x"
-    println "Vertical Matches: $y"
-    println "Diagonal Matches: $d"
-    println "Total Matches: ${x + y + d}"
+            .readLines()
+            .collect { it.split("") }
+    bothDiagonals(arr)
 }
